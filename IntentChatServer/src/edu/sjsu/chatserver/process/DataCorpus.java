@@ -12,10 +12,12 @@ public class DataCorpus {
 	private static final String ENTRY = "{\"class\":\"?\", \"sentence\":\"*\"}";
 	private static int classIndex = ENTRY.indexOf("?");
 	private static int msgIndex = ENTRY.indexOf("*");
+	
 	private static final String HOST = "localhost";
+	
 	private static final int PORT = 6556;
 
-	public static void appendCorpus(String message, String classifier) {
+	public static void appendCorpusMQ(String message, String classifier) {
 		String data = prepareCorpusEntry(message, classifier);
 		addToMessageQueue(data);
 	}

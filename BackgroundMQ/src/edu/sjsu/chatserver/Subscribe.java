@@ -1,8 +1,9 @@
 package edu.sjsu.chatserver;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
+import java.io.PrintWriter;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -18,6 +19,7 @@ import edu.sjsu.chatserver.threads.MQThread;
 
 public class Subscribe {
 
+	private static final String FILE_NAME = "C:\\Users\\HEMA\\git\\295A-Server\\Python\\data\\corpus1";
 	
 	public static void main(String[] args) {
 		
@@ -45,6 +47,7 @@ public class Subscribe {
 	                                 AMQP.BasicProperties properties, byte[] body) throws IOException {
 	    	mLock.lock();
 	    	String message = new String(body, "UTF-8");
+	    	appendCorpusFile(message);
 	        System.out.println(" [x] Received '" + message + "'");
 	        mLock.unlock();
 		  	}
@@ -54,6 +57,27 @@ public class Subscribe {
 	    catch(Exception e){
 	    	e.printStackTrace();
 	    }
+	}
+	
+	public static void appendCorpusFile(String message) {
+		
+		FileWriter fw = null;
+		try{
+			fw = new FileWriter(FILE_NAME, true);
+			fw.write(message);
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally{
+			if (fw != null) {
+				try {
+					fw.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
 
