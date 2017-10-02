@@ -49,24 +49,11 @@ public class DataCorpus {
 				e.printStackTrace();
 			}
 		}
-
-		/*
-		 * FileWriter writer = null; try { File f = new
-		 * File(CORPUS_TEMP_LOCATION); writer = new
-		 * FileWriter(CORPUS_TEMP_LOCATION, true); if(!f.canWrite()) {
-		 * System.out.
-		 * println("might be accessed by other application, lets wait!");
-		 * Thread.sleep(100); } writer.write(data); writer.flush();
-		 * writer.close(); } catch (Exception e) { e.printStackTrace(); }
-		 * finally { if (writer != null) { try { writer.flush(); writer.close();
-		 * } catch (IOException e) { e.printStackTrace(); } } }
-		 */
 	}
 
 	private static String prepareCorpusEntry(String message, String classifier) {
 
 		StringBuffer buffer = new StringBuffer();
-
 		buffer.append(ENTRY.substring(0, classIndex)).append(classifier).append(ENTRY.substring(classIndex, msgIndex))
 				.append(message).append(ENTRY.substring(msgIndex));
 		return buffer.toString();

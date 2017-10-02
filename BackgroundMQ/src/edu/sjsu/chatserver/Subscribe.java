@@ -1,9 +1,7 @@
 package edu.sjsu.chatserver;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -31,29 +29,30 @@ public class Subscribe {
 		String EXCHANGE_NAME = "EXCHANGE";
 	    ConnectionFactory factory = new ConnectionFactory();
 	    factory.setHost("localhost");
+	    
 	    try{
-	    Connection connection = factory.newConnection();
-	    Channel channel = connection.createChannel();
-
-	    channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-	    String queueName = channel.queueDeclare().getQueue();
-	    channel.queueBind(queueName, EXCHANGE_NAME, "");
-
-	    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
-
-	    Consumer consumer = new DefaultConsumer(channel) {
-	    @Override
-	    public void handleDelivery(String consumerTag, Envelope envelope,
-	                                 AMQP.BasicProperties properties, byte[] body) throws IOException {
-	    	mLock.lock();
-	    	String message = new String(body, "UTF-8");
-	    	appendCorpusFile(message);
-	        System.out.println(" [x] Received '" + message + "'");
-	        mLock.unlock();
-		  	}
-		};
-		channel.basicConsume(queueName, true, consumer);
-	    }
+		    Connection connection = factory.newConnection();
+		    Channel channel = connection.createChannel();
+		
+		    channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
+		    String queueName = channel.queueDeclare().getQueue();
+		    channel.queueBind(queueName, EXCHANGE_NAME, "");
+		
+		    System.out.println(" [*] Waiting for messages. To exit press CTRL+C");
+		
+		    Consumer consumer = new DefaultConsumer(channel) {
+		    @Override
+		    public void handleDelivery(String consumerTag, Envelope envelope,
+		                                 AMQP.BasicProperties properties, byte[] body) throws IOException {
+		    	mLock.lock();
+		    	String message = new String(body, "UTF-8");
+		    	appendCorpusFile(message);
+		        System.out.println(" [x] Received '" + message + "'");
+		        mLock.unlock();
+			  	}
+			};
+			channel.basicConsume(queueName, true, consumer);
+		}
 	    catch(Exception e){
 	    	e.printStackTrace();
 	    }
