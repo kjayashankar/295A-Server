@@ -12,6 +12,8 @@ public class DataCorpus {
 	private static final String ENTRY = "{\"class\":\"?\", \"sentence\":\"*\"}";
 	private static int classIndex = ENTRY.indexOf("?");
 	private static int msgIndex = ENTRY.indexOf("*");
+	private static final String HOST = "localhost";
+	private static final int PORT = 6556;
 
 	public static void appendCorpus(String message, String classifier) {
 		String data = prepareCorpusEntry(message, classifier);
@@ -24,7 +26,8 @@ public class DataCorpus {
 		Connection connection = null;
 		String EXCHANGE_NAME = "EXCHANGE";
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		factory.setHost(HOST);
+		factory.setPort(PORT);
 		try {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
