@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import edu.sjsu.chatserver.process.DataCorpus;
 
 
-@Path("/intent")
+@Path("intent")
 public final class IntentRecognitionContainer {
 
 	private static final int SUCCESS_CODE = 200;
