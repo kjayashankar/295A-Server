@@ -1,19 +1,19 @@
 package edu.sjsu.chatserver.websockets;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
- 
+
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+
+import edu.sjsu.chatserver.data.Message;
+import edu.sjsu.chatserver.utils.JSONUtils;
+import edu.sjsu.chatserver.utils.MongoUtils;
 
  
 @ServerEndpoint("/chat")
@@ -49,7 +49,12 @@ public class WebSocketsImpl {
  
         System.out.println("Message from " + session.getId() + ": " + message);
  
-        String msg = null;
+        Message msg = JSONUtils.parseMessage(message);
+        
+        MongoUtils.process(msg);
+        // run algorithm;
+        // store in data base;
+        // push it to other party
     }
  
     /**
