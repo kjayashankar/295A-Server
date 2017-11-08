@@ -1,8 +1,10 @@
 package edu.sjsu.chatserver.websockets;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.websocket.OnClose;
@@ -33,7 +35,16 @@ public class WebSocketsImpl {
     public void onOpen(Session session) {
  
         System.out.println(session.getId() + " has opened a connection");
-        String name = "";
+
+        Map<String, String> queryParams = getQueryMap(session.getQueryString());
+        System.out.println(queryParams);
+        String from = queryParams.get("from");
+        String to = queryParams.get("to");
+        
+        String text = MongoUtils.getConversation(from,to);
+        
+        placeMessage(session, text);
+        
         // Adding session to session list
         sessions.add(session); 
     }
@@ -64,5 +75,25 @@ public class WebSocketsImpl {
     public void onClose(Session session) {
  
         System.out.println("Session " + session.getId() + " has ended");
+    }
+    
+    public static Map<String, String> getQueryMap(String query) {
+        Map<String, String> map = new HashMap<String, String>();
+        if (query != null) {
+            String[] params = query.split("&");
+            for (String param : params) {
+                String[] nameval = param.split("=");
+                map.put(nameval[0], nameval[1].replaceAll("\\+", " "));
+            }
+        }
+        return map;
+    }
+    
+    private void placeMessage(Session session, String text) {
+    	try {
+			session.getBasicRemote().sendText(text);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 }
