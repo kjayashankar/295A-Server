@@ -73,7 +73,7 @@ public class WebSocketsImpl {
         String to = queryParams.get("to");
         
         String text = MongoUtils.getConversation(from,to);
-        
+        MongoUtils.readMessage(from, to);
         placeMessage(session, text);
         // Adding session to session list
         nameSessionPair.putIfAbsent(from+"-"+to,session); 

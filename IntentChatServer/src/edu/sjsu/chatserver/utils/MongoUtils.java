@@ -108,6 +108,28 @@ public class MongoUtils {
 			return "";
 		return "["+sb.toString().substring(1)+"]";
 	}
+
+	public static void readMessage(String user, String friend) {
+		// TODO Auto-generated method stub
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DB database = mongoClient.getDB(DB_NAME);
+		DBCollection collection = database.getCollection(user+RECENT_FRIENDS);
+		
+		BasicDBObject document1 = new BasicDBObject();
+		document1.put("name", friend);
+		
+		BasicDBObject document2 = new BasicDBObject();
+		document2.put("name", friend);
+		document2.append("value", "READ");
+		
+		collection.update(document1,document2);
+	}
 	
 	// check if collection exists
 	

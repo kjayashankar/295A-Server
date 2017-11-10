@@ -1,43 +1,43 @@
-{"class":"eat", "sentence":"how about a lunch?"})
-{"class":"eat", "sentence":"up for a snack?"})
-{"class":"eat", "sentence":"let's go out for a lunch"})
-{"class":"eat", "sentence":"let's go for a bite"})
-{"class":"eat","sentence":"Is it noon already? I want eat something"})
-{"class":"eat","sentence":"Did you eat lunch today"})
-{"class":"eat","sentence":"Do you like to eat beef?"})
-{"class":"eat","sentence":"Do you like fruits?"})
-{"class":"eat","sentence":"Do you eat lunch at school?"})
-{"class":"eat","sentence":"Do you like to eat rice?"})
-{"class":"eat","sentence":"Do you bring lunch to the school?"})
-{"class":"eat","sentence":"Do you like Thai food?"})
-{"class":"eat","sentence":"How about Chinese food?"})
-{"class":"eat","sentence":"Will you say yes for Spanish food?"})
-{"class":"eat","sentence":"Shall we have some French food?"})
-{"class":"eat","sentence":"I love Italian food, how about you?"})
-{"class":"eat","sentence":"How about indian food?"})
-{"class":"eat","sentence":"Lets have mexican food"})
-{"class":"eat","sentence":"Are you up for some wings?"})
-{"class":"eat","sentence":"Would you like to have some food?"})
-{"class":"eat","sentence":"would you like to go for a dinner today?"})
-{"class":"eat","sentence":"What's your favorite junk food?"})
-{"class":"noeat","sentence":"Indian food is very spicy. I don't like spicy food"})
-{"class":"noeat","sentence":"Most people hate mexican food because it is spicy"})
-{"class":"noeat","sentence":"I really much preference toward spanish cuisine"})
-{"class":"noeat","sentence":"It is not possible now"})
-{"class":"noeat","sentence":"I have some urgent business"})
-{"class":"noeat","sentence":"I'm in a meeting now."})
-{"class":"noeat","sentence":"I'm not in a mood to eat"})
-{"class":"noeat","sentence":"I don't like chinese food"})
-{"class":"noeat","sentence":"I don't like french cuisine"})
-{"class":"noeat","sentence":"Italian cuisine is something I really hate"})
-{"class":"noeat", "sentence":"i got some work to do"})
-{"class":"noeat", "sentence":"i'm not hungry"})
-{"class":"noeat", "sentence":"i'm full, someother time"})
-{"class":"noeat", "sentence":"not now"})
-{"class":"noeat", "sentence":"lets not eat"})
-{"class":"noeat", "sentence":"I don't feel like eating"})
-{"class":"noeat", "sentence":"I'm not hungry anymore"})
-{"class":"noeat", "sentence":"I don't want to eat at this time"})
-{"class":"noeat", "sentence":"I don't have appetite"})
-{"class":"noeat", "sentence":"I am full right"})
-{"class":"noeat", "sentence":"Sorry, I'm on a fast"})
+{"class":"eat", "sentence":"how about a lunch?"}
+{"class":"eat", "sentence":"up for a snack?"}
+{"class":"eat", "sentence":"let's go out for a lunch"}
+{"class":"eat", "sentence":"let's go for a bite"}
+{"class":"eat","sentence":"Is it noon already? I want eat something"}
+{"class":"eat","sentence":"Did you eat lunch today"}
+{"class":"eat","sentence":"Do you like to eat beef?"}
+{"class":"eat","sentence":"Do you like fruits?"}
+{"class":"eat","sentence":"Do you eat lunch at school?"}
+{"class":"eat","sentence":"Do you like to eat rice?"}
+{"class":"eat","sentence":"Do you bring lunch to the school?"}
+{"class":"eat","sentence":"Do you like Thai food?"}
+{"class":"eat","sentence":"How about Chinese food?"}
+{"class":"eat","sentence":"Will you say yes for Spanish food?"}
+{"class":"eat","sentence":"Shall we have some French food?"}
+{"class":"eat","sentence":"I love Italian food, how about you?"}
+{"class":"eat","sentence":"How about indian food?"}
+{"class":"eat","sentence":"Lets have mexican food"}
+{"class":"eat","sentence":"Are you up for some wings?"}
+{"class":"eat","sentence":"Would you like to have some food?"}
+{"class":"eat","sentence":"would you like to go for a dinner today?"}
+{"class":"eat","sentence":"What's your favorite junk food?"}
+{"class":"noeat","sentence":"Indian food is very spicy. I don't like spicy food"}
+{"class":"noeat","sentence":"Most people hate mexican food because it is spicy"}
+{"class":"noeat","sentence":"I really much preference toward spanish cuisine"}
+{"class":"noeat","sentence":"It is not possible now"}
+{"class":"noeat","sentence":"I have some urgent business"}
+{"class":"noeat","sentence":"I'm in a meeting now."}
+{"class":"noeat","sentence":"I'm not in a mood to eat"}
+{"class":"noeat","sentence":"I don't like chinese food"}
+{"class":"noeat","sentence":"I don't like french cuisine"}
+{"class":"noeat","sentence":"Italian cuisine is something I really hate"}
+{"class":"noeat", "sentence":"i got some work to do"}
+{"class":"noeat", "sentence":"i'm not hungry"}
+{"class":"noeat", "sentence":"i'm full, someother time"}
+{"class":"noeat", "sentence":"not now"}
+{"class":"noeat", "sentence":"lets not eat"}
+{"class":"noeat", "sentence":"I don't feel like eating"}
+{"class":"noeat", "sentence":"I'm not hungry anymore"}
+{"class":"noeat", "sentence":"I don't want to eat at this time"}
+{"class":"noeat", "sentence":"I don't have appetite"}
+{"class":"noeat", "sentence":"I am full right"}
+{"class":"noeat", "sentence":"Sorry, I'm on a fast"}

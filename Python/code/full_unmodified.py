@@ -10,12 +10,50 @@ import time
 
 #2 classes of training data
 training_data = []
+training_data.append({"class":"eat", "sentence":"how about a lunch?"})
+training_data.append({"class":"eat", "sentence":"up for a snack?"})
+training_data.append({"class":"eat", "sentence":"let's go out for a lunch"})
+training_data.append({"class":"eat", "sentence":"let's go for a bite"})
+training_data.append({"class":"eat","sentence":"Is it noon already? I want eat something"})
+training_data.append({"class":"eat","sentence":"Did you eat lunch today"})
+training_data.append({"class":"eat","sentence":"Do you like to eat beef?"})
+training_data.append({"class":"eat","sentence":"Do you like fruits?"})
+training_data.append({"class":"eat","sentence":"Do you eat lunch at school?"})
+training_data.append({"class":"eat","sentence":"Do you like to eat rice?"})
+training_data.append({"class":"eat","sentence":"Do you bring lunch to the school?"})
+training_data.append({"class":"eat","sentence":"Do you like Thai food?"})
+training_data.append({"class":"eat","sentence":"How about Chinese food?"})
+training_data.append({"class":"eat","sentence":"Will you say yes for Spanish food?"})
+training_data.append({"class":"eat","sentence":"Shall we have some French food?"})
+training_data.append({"class":"eat","sentence":"I love Italian food, how about you?"})
+training_data.append({"class":"eat","sentence":"How about indian food?"})
+training_data.append({"class":"eat","sentence":"Lets have mexican food"})
+training_data.append({"class":"eat","sentence":"Are you up for some wings?"})
+training_data.append({"class":"eat","sentence":"Would you like to have some food?"})
+training_data.append({"class":"eat","sentence":"would you like to go for a dinner today?"})
+training_data.append({"class":"eat","sentence":"What's your favorite junk food?"})
 
-f = open('/media/jay/Study/git/295A-Server/Python/data/corpus')
-for line in f:
-    line = line.replace("\n","")
-    js = json.loads(line)
-    training_data.append({"class":js["class"],"sentence":js["sentence"]})
+training_data.append({"class":"noeat","sentence":"Indian food is very spicy. I don't like spicy food"})
+training_data.append({"class":"noeat","sentence":"Most people hate mexican food because it is spicy"})
+training_data.append({"class":"noeat","sentence":"I really much preference toward spanish cuisine"})
+training_data.append({"class":"noeat","sentence":"It is not possible now"})
+training_data.append({"class":"noeat","sentence":"I have some urgent business"})
+training_data.append({"class":"noeat","sentence":"I'm in a meeting now."})
+training_data.append({"class":"noeat","sentence":"I'm not in a mood to eat"})
+training_data.append({"class":"noeat","sentence":"I don't like chinese food"})
+training_data.append({"class":"noeat","sentence":"I don't like french cuisine"})
+training_data.append({"class":"noeat","sentence":"Italian cuisine is something I really hate"})
+training_data.append({"class":"noeat", "sentence":"i got some work to do"})
+training_data.append({"class":"noeat", "sentence":"i'm not hungry"})
+training_data.append({"class":"noeat", "sentence":"i'm full, someother time"})
+training_data.append({"class":"noeat", "sentence":"not now"})
+training_data.append({"class":"noeat", "sentence":"lets not eat"})
+training_data.append({"class":"noeat", "sentence":"I don't feel like eating"})
+training_data.append({"class":"noeat", "sentence":"I'm not hungry anymore"})
+training_data.append({"class":"noeat", "sentence":"I don't want to eat at this time"})
+training_data.append({"class":"noeat", "sentence":"I don't have appetite"})
+training_data.append({"class":"noeat", "sentence":"I am full right"})
+training_data.append({"class":"noeat", "sentence":"Sorry, I'm on a fast"})
 
 # cross validation data set
 validation_data = []
@@ -242,7 +280,7 @@ with open(weights_file) as data_file:
 # main classification initiator
 # will be used by our validation an testing functions
 
-def classify(sentence, show_details=False):
+def classify(sentence, show_details=True):
     results = predictusing_ann(sentence, show_details)
 
     results = [[i,r] for i,r in enumerate(results) if r>ERROR_THRESHOLD ] 
