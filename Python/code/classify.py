@@ -6,6 +6,9 @@ import json
 import datetime
 stemmer = LancasterStemmer()
 import numpy as np
+import sys
+
+inputString = str(sys.argv[1])
 
 weights_file = "/media/jay/Study/git/295A-Server/Python/code/weights.json"
 
@@ -16,7 +19,6 @@ with open(weights_file) as data_file:
     words = np.asarray(weights['words'])
     classes = np.asarray(weights['classes'])
 
-print (len(documents), "documents")
 print (len(classes), "classes", classes)
 print (len(words), "unique stemmed words", words)
 
@@ -59,11 +61,12 @@ def predictusing_ann(sentence, show_details=False):
 
 def classify(sentence, show_details=False):
     results = predictusing_ann(sentence, show_details)
-
+    ERROR_THRESHOLD = 0.2
+    print(results)
     results = [[i,r] for i,r in enumerate(results) if r>ERROR_THRESHOLD ] 
     results.sort(key=lambda x: x[1], reverse=True) 
     return_results =[[classes[r[0]],r[1]] for r in results]
-    #print ("%s \n classification: %s" % (sentence, return_results))
+    print ("%s \n classification: %s" % (sentence, return_results))
     return return_results
 
-classify("how about lunch?")
+classify(inputString)

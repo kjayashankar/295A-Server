@@ -27,7 +27,6 @@ import edu.sjsu.chatserver.utils.MongoUtils;
 @ServerEndpoint("/chat")
 public class WebSocketsImpl {
  
-    // Mapping between session and person name
     private static final ConcurrentHashMap<String, Session> nameSessionPair = new ConcurrentHashMap<String, Session>();
  
     private static Channel channel = null;
