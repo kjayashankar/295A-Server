@@ -14,7 +14,7 @@ import edu.sjsu.chatserver.process.DataCorpus;
 import edu.sjsu.chatserver.utils.MongoUtils;
 
 
-@Path("friends")
+@Path("friendsPage")
 public final class IntentRecognitionContainer {
 
 	private static final int SUCCESS_CODE = 200;
@@ -22,7 +22,7 @@ public final class IntentRecognitionContainer {
 	private static final String SUCCESS_MSG = "success";
 	private static final String FAILURE_MSG = "fail";
 
-	@GET
+	/*@GET
 	@Path("/{chatString}")
 	public Response getMsg(@PathParam("chatString") String chatString) {
 		String output = "Classification for chat : " + chatString;
@@ -34,32 +34,36 @@ public final class IntentRecognitionContainer {
 	public Response updateCorpus(String sentence, String classifier){
 		DataCorpus.appendCorpusMQ(sentence, classifier);
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
-	}
+	}*/
 	
 	@GET
-	@Path("/getFriends")
-	public Response getFriendsVanilla(String username) {
+	@Path("/friends/{username}")
+	public Response getFriendsVanilla(@PathParam("username") String username) {
+		username = username.replaceAll("\\+", " ");
 		String resp = listToString(MongoUtils.getFriends(username));
 		return Response.status(SUCCESS_CODE).entity(resp).build();
 	}
 	
 	@GET
-	@Path("/requests")
-	public Response getFriendRequests(String username) {
+	@Path("/requests/{username}")
+	public Response getFriendRequests(@PathParam("username") String username) {
+		username = username.replaceAll("\\+", " ");
 		String resp = listToString(MongoUtils.getFriendRequests(username));
 		return Response.status(SUCCESS_CODE).entity(resp).build();
 	}
 	
 	@GET
-	@Path("/confirmations")
-	public Response getconfirmations(String username) {
+	@Path("/confirmations/{username}")
+	public Response getconfirmations(@PathParam("username") String username) {
+		username = username.replaceAll("\\+", " ");
 		String resp = listToString(MongoUtils.getFriendConfirmations(username));
 		return Response.status(SUCCESS_CODE).entity(resp).build();
 	}
 	
 	@GET
-	@Path("/search")
-	public Response getSearchList(String username) {
+	@Path("/search/{username}")
+	public Response getSearchList(@PathParam("username") String username) {
+		username = username.replaceAll("\\+", " ");
 		String resp = MongoUtils.getUser(username);
 		return Response.status(SUCCESS_CODE).entity(resp).build();
 	}

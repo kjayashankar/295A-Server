@@ -19,7 +19,7 @@ public class MongoUtils {
 
 	private static String DB_NAME = "project";
 	private static String RECENT_FRIENDS = "RecentFriends";
-	private static String FRIENDS = "FRIENDS";
+	private static String FRIENDS = "Friends";
 	
 	public static void process(Message msg) {
 		MongoClient mongoClient = null;
@@ -147,6 +147,7 @@ public class MongoUtils {
 				result.add(obj);
 			}
 		}
+		System.out.println(result);
 		return result;
 	}
 	
