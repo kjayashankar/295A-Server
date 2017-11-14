@@ -212,9 +212,9 @@ public class MongoUtils {
 		DBCursor cursor = collection.find();
 		if (cursor.hasNext()){
 			DBObject obj = cursor.next();
-			sb.append(obj.toString());
+			sb.append(","+obj.toString());
 		}
-		return sb.toString();
+		return "["+sb.toString().substring(1)+"]";
 	}
 
 	public static boolean sendFriendRequest(String username, String friendName) {
@@ -300,17 +300,18 @@ public class MongoUtils {
 			e.printStackTrace();
 		}
 		DB database = mongoClient.getDB(DB_NAME);
-		
 		DBCollection collection1 = database.getCollection(username+FRIENDS);
-		BasicDBObject document1 = new BasicDBObject();
-		document1.put("name", friendName);
-		collection1.remove(document1);
-		
+		if (collection1 != null) {
+			BasicDBObject document1 = new BasicDBObject();
+			document1.put("name", friendName);
+			collection1.remove(document1);
+		}
 		DBCollection collection2 = database.getCollection(friendName+FRIENDS);
-		BasicDBObject document2 = new BasicDBObject();
-		document2.put("name", username);
-		collection2.remove(document2);
-		
+		if (collection2 != null) {
+			BasicDBObject document2 = new BasicDBObject();
+			document2.put("name", username);
+			collection2.remove(document2);
+		}
 	}
 	
 	

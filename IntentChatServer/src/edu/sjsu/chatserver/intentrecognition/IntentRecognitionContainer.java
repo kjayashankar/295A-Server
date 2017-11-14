@@ -68,18 +68,18 @@ public final class IntentRecognitionContainer {
 		return Response.status(SUCCESS_CODE).entity(resp).build();
 	}
 	
-	@POST
-	@Path("/accept")
-	public Response acceptFriends(String username, String friendName){
+	@GET
+	@Path("/accept/{username}/{friendName}")
+	public Response acceptFriends(@PathParam("username") String username, @PathParam("friendName") String friendName){
 	
 		MongoUtils.acceptFriendRequest(username,friendName);
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
 		
 	}
 	
-	@POST
-	@Path("/sendRequest")
-	public Response sendFriendRequest(String username, String friendName) {
+	@GET
+	@Path("/sendRequest/{username}/{friendName}")
+	public Response sendFriendRequest(@PathParam("username") String username, @PathParam("friendName") String friendName) {
 		
 		if (MongoUtils.sendFriendRequest(username,friendName))
 			return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
@@ -87,9 +87,11 @@ public final class IntentRecognitionContainer {
 			return Response.status(SUCCESS_CODE).entity(FAILURE_MSG).build();
 	}
 	
-	@POST
-	@Path("/deleteRequest")
-	public Response deleteRequest(String username,String friendName) {
+	@GET
+	@Path("/deleteRequest/{username}/{friendName}")
+	public Response deleteRequest(@PathParam("username") String username, @PathParam("friendName") String friendName) {
+		username = username.replaceAll("\\+", " ");
+		friendName = friendName.replaceAll("\\+", " ");
 		MongoUtils.deleteRequest(username,friendName);
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
 		
