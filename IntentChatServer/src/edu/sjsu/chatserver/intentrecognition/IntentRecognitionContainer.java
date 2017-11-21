@@ -97,6 +97,15 @@ public final class IntentRecognitionContainer {
 		
 	}
 	
+	@GET
+	@Path("/updateCorpus/{classification}/{sentence}") 
+	public Response updateCorpus(@PathParam("classification") String classification,
+			@PathParam("sentence") String sentence){
+		System.out.println("message is going to be added to MQ " +classification+"::"+sentence);
+		DataCorpus.appendCorpusMQ(sentence, classification);
+		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+	}
+	
 	private String listToString(List<DBObject> aResult) {
 		if (aResult.isEmpty()){
 			return "";

@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeoutException;
 
 import javax.websocket.OnClose;
@@ -20,6 +22,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
 import edu.sjsu.chatserver.data.Message;
+import edu.sjsu.chatserver.data.Task;
 import edu.sjsu.chatserver.utils.JSONUtils;
 import edu.sjsu.chatserver.utils.MongoUtils;
 
@@ -28,7 +31,10 @@ import edu.sjsu.chatserver.utils.MongoUtils;
 public class WebSocketsImpl {
  
     private static final ConcurrentHashMap<String, Session> nameSessionPair = new ConcurrentHashMap<String, Session>();
- 
+    private static final ConcurrentHashMap<Session, String> sessionNamePair = new ConcurrentHashMap<Session, String>();
+
+    private static BlockingQueue<Task> queue = new LinkedBlockingQueue<Task>();
+    
     private static Channel channel = null;
     private static String HOST = "localhost"; 
     private static int PORT = 5672;
@@ -36,6 +42,26 @@ public class WebSocketsImpl {
     
     static { 
 		Connection connection = null;
+		Thread cThread = new ClassificationThread( new Callback() {
+
+			@Override
+			public void process(Task t) {
+				// TODO Auto-generated method stub
+				String sess1 = t.getSock1();
+				String sess2 = t.getSock2();
+				String intent = t.getIntent();
+				String ms = sess1+"-"+sess2+";"+intent;
+				try {
+					channel.basicPublish(EXCHANGE_NAME, "", null, ms.getBytes() );
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			
+		} ,queue); 
+		cThread.start();
 		
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost(HOST);
@@ -76,6 +102,7 @@ public class WebSocketsImpl {
         placeMessage(session, text);
         // Adding session to session list
         nameSessionPair.putIfAbsent(from+"-"+to,session); 
+        sessionNamePair.put(session, from+"-"+to);
     }
  
     /**
@@ -92,7 +119,12 @@ public class WebSocketsImpl {
         Message msg = JSONUtils.parseMessage(message);
         
         MongoUtils.process(msg);
-        
+        try {
+			queue.put(new Task(msg.getSender(), msg.getTo(), msg.getDeepValue()));
+		} catch (InterruptedException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
         Session send = nameSessionPair.get(msg.getTo()+"-"+msg.getSender());
         if (send != null) {
 	        try {
@@ -129,6 +161,9 @@ public class WebSocketsImpl {
     public void onClose(Session session) {
  
         System.out.println("Session " + session.getId() + " has ended");
+        String str = sessionNamePair.get(session);
+        sessionNamePair.remove(session);
+        nameSessionPair.remove(str);
     }
     
     public static Map<String, String> getQueryMap(String query) {

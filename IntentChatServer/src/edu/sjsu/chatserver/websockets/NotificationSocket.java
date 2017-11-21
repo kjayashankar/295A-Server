@@ -31,7 +31,8 @@ public class NotificationSocket {
 	
     private static ConcurrentHashMap<String,Session> sessions =
     		new ConcurrentHashMap<String,Session>();
-    
+    private static ConcurrentHashMap<Session, String> sessionInverse =
+    		new ConcurrentHashMap<Session, String>();
 	static {
 		String EXCHANGE_NAME = "sockets";
 	    ConnectionFactory factory = new ConnectionFactory();
@@ -109,6 +110,8 @@ public class NotificationSocket {
     @OnClose
     public void onClose(Session session) {
     
-    	
+    	String name = sessionInverse.get(session);
+    	sessionInverse.remove(session);
+    	sessions.remove(name);    	
     }
 }

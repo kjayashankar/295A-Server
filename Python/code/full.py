@@ -11,7 +11,7 @@ import time
 #2 classes of training data
 training_data = []
 
-f = open('/media/jay/Study/git/295A-Server/Python/data/corpus')
+f = open('C:\\Users\\Jay\\git\\295A-Server\\Python\\data\\corpus')
 for line in f:
     line = line.replace("\n","")
     js = json.loads(line)

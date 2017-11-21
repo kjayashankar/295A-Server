@@ -16,17 +16,11 @@ public class DataCorpus {
 	private static final String HOST = "localhost";
 	
 	private static final int PORT = 6556;
+	static String EXCHANGE_NAME = "EXCHANGE";
+	static Channel channel = null;
 
-	public static void appendCorpusMQ(String message, String classifier) {
-		String data = prepareCorpusEntry(message, classifier);
-		addToMessageQueue(data);
-	}
-
-	private static void addToMessageQueue(String data) {
-
-		Channel channel = null;
+	static {
 		Connection connection = null;
-		String EXCHANGE_NAME = "EXCHANGE";
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost(HOST);
 		factory.setPort(PORT);
@@ -35,20 +29,25 @@ public class DataCorpus {
 			channel = connection.createChannel();
 
 			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-			String message = data;
-			channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());
-			System.out.println(" [x] Sent '" + message + "'");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+		}
+		catch(Exception e) {
+			
+		}
+	}
+	
+	public static void appendCorpusMQ(String message, String classifier) {
+		String data = prepareCorpusEntry(message, classifier);
+		addToMessageQueue(data);
+	}
+
+	private static void addToMessageQueue(String data) {
 			try {
-				channel.close();
-				connection.close();
-			} catch (IOException | TimeoutException e) {
+				channel.basicPublish(EXCHANGE_NAME, "", null, data.getBytes());
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
+			System.out.println(" [x] Sent '" + data + "'");
 	}
 
 	private static String prepareCorpusEntry(String message, String classifier) {
