@@ -314,5 +314,42 @@ public class MongoUtils {
 		}
 	}
 	
+	public static void registerUser(String name, String email, String password, String picURL) {
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		DB database = mongoClient.getDB(DB_NAME);
+		DBCollection collection = database.getCollection("ALLUSERS");
+		BasicDBObject document = new BasicDBObject();
+		document.put("name", name);
+		document.put("email", email);
+		document.put("password", password);
+		document.put("picURL", picURL);
+		collection.insert(document);
+	}
+	
+	public static boolean authenticateUser(String userName, String password) {
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		DB database = mongoClient.getDB(DB_NAME);
+		DBCollection collection = database.getCollection("ALLUSERS");
+		DBCursor cursor = collection.find();
+		while (cursor.hasNext()){
+			DBObject document = cursor.next();
+			if(userName.equals((String)document.get("email")) && password.equals((String)document.get("password")))
+				return true;
+			String mail = (String)document.get("email");
+			String pass = (String)document.get("password");
+		}
+		return false;
+	}
+	
 	
 }
