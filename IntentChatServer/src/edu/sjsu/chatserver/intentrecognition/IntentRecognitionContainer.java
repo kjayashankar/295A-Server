@@ -118,17 +118,19 @@ public final class IntentRecognitionContainer {
 	@POST
 	@Path("/registerUser")
 	public Response registerUser(@FormParam("name") String name, @FormParam("email") String email, 
-			@FormParam("password") String password, @FormParam("picURL") String picURL){
-		MongoUtils.registerUser(name, email, password, picURL);
-		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+			@FormParam("password") String password, @FormParam("picURL") String picURL, @FormParam("authType") String authType){
+		if(MongoUtils.registerUser(name, email, password, picURL, authType))
+			return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+		return Response.status(SUCCESS_CODE).entity(FAILURE_MSG).build();
 	}
 	
 	@POST
 	@Path("/authenticateUser")
 	public Response authenticateUser(@FormParam("userName") String userName, @FormParam("password") String password){
-		if(userName!=null && password!=null && MongoUtils.authenticateUser(userName, password))
-			return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
-		return Response.status(SUCCESS_CODE).entity(FAILURE_MSG).build();
+		String userFullName = MongoUtils.authenticateUser(userName, password);
+		if(userFullName != null)
+			return Response.status(SUCCESS_CODE).entity(userFullName).build();
+		return Response.status(SUCCESS_CODE).entity("***" + FAILURE_MSG).build();
 	}
 	
 	private String listToString(List<DBObject> aResult) {

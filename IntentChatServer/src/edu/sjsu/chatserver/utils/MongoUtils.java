@@ -314,7 +314,7 @@ public class MongoUtils {
 		}
 	}
 	
-	public static void registerUser(String name, String email, String password, String picURL) {
+	public static boolean registerUser(String name, String email, String password, String picURL, String authType) {
 		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
@@ -322,16 +322,29 @@ public class MongoUtils {
 			e.printStackTrace();
 		}
 		DB database = mongoClient.getDB(DB_NAME);
-		DBCollection collection = database.getCollection("ALLUSERS");
-		BasicDBObject document = new BasicDBObject();
-		document.put("name", name);
-		document.put("email", email);
-		document.put("password", password);
-		document.put("picURL", picURL);
-		collection.insert(document);
+		DBCollection collection1 = database.getCollection("ALLUSERS");
+		
+		// return false if email is already registered with respect to authType
+		DBCursor cursor = collection1.find();
+		while (cursor.hasNext()){
+			DBObject document1 = cursor.next();
+			if(email.equals((String)document1.get("email")) && authType.equals((String)document1.get("authType")))
+				return false;
+		}
+		
+		// return true and register if email is not already registered
+		DBCollection collection2 = database.getCollection("ALLUSERS");
+		BasicDBObject document2 = new BasicDBObject();
+		document2.put("name", name);
+		document2.put("email", email);
+		document2.put("password", password);
+		document2.put("authType", authType);
+		document2.put("picURL", picURL);
+		collection2.insert(document2);
+		return true;
 	}
 	
-	public static boolean authenticateUser(String userName, String password) {
+	public static String authenticateUser(String userName, String password) {
 		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
@@ -344,11 +357,9 @@ public class MongoUtils {
 		while (cursor.hasNext()){
 			DBObject document = cursor.next();
 			if(userName.equals((String)document.get("email")) && password.equals((String)document.get("password")))
-				return true;
-			String mail = (String)document.get("email");
-			String pass = (String)document.get("password");
+				return (String)document.get("name");
 		}
-		return false;
+		return null;
 	}
 	
 	
