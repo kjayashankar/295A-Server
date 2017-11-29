@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -112,6 +113,22 @@ public final class IntentRecognitionContainer {
 		System.out.println("message is going to be added to MQ " +classification+"::"+sentence);
 		DataCorpus.appendCorpusMQ(sentence, classification);
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+	}
+	
+	@POST
+	@Path("/registerUser")
+	public Response registerUser(@FormParam("name") String name, @FormParam("email") String email, 
+			@FormParam("password") String password, @FormParam("picURL") String picURL){
+		MongoUtils.registerUser(name, email, password, picURL);
+		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+	}
+	
+	@POST
+	@Path("/authenticateUser")
+	public Response authenticateUser(@FormParam("userName") String userName, @FormParam("password") String password){
+		if(userName!=null && password!=null && MongoUtils.authenticateUser(userName, password))
+			return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+		return Response.status(SUCCESS_CODE).entity(FAILURE_MSG).build();
 	}
 	
 	private String listToString(List<DBObject> aResult) {
