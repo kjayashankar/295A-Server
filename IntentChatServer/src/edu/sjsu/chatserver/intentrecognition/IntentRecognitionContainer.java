@@ -1,5 +1,7 @@
 package edu.sjsu.chatserver.intentrecognition;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -101,6 +103,12 @@ public final class IntentRecognitionContainer {
 	@Path("/updateCorpus/{classification}/{sentence}") 
 	public Response updateCorpus(@PathParam("classification") String classification,
 			@PathParam("sentence") String sentence){
+		try {
+			sentence = URLDecoder.decode(sentence,"utf-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("message is going to be added to MQ " +classification+"::"+sentence);
 		DataCorpus.appendCorpusMQ(sentence, classification);
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();

@@ -18,10 +18,11 @@ public class DataCorpus {
 	private static final int PORT = 6556;
 	static String EXCHANGE_NAME = "EXCHANGE";
 	static Channel channel = null;
-
+	static Connection connection = null;
+	static ConnectionFactory factory = new ConnectionFactory();
 	static {
-		Connection connection = null;
-		ConnectionFactory factory = new ConnectionFactory();
+		connection = null;
+		
 		factory.setHost(HOST);
 		factory.setPort(PORT);
 		try {
@@ -31,7 +32,7 @@ public class DataCorpus {
 			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 		}
 		catch(Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 	

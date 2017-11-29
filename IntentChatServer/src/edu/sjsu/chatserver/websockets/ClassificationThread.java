@@ -3,6 +3,7 @@ package edu.sjsu.chatserver.websockets;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
@@ -47,9 +48,15 @@ public class ClassificationThread extends Thread{
 	
 	private boolean classify(Task t) {
 		Process p = null;
+		ProcessBuilder pb = null;
 		try {
-	    	p = Runtime.getRuntime().exec("python C:\\Users\\Jay\\git\\295A-Server\\Python\\code\\classify.py \""+t.getMsg()+"\"");
-	    } catch (IOException e) {
+	    	pb = new ProcessBuilder("python", "C:\\Users\\Jay\\git\\295A-Server\\Python\\code\\classify.py","/"+t.getMsg()+"/");
+	    	//pb.redirectOutput(Redirect.INHERIT);
+	    	//pb.redirectError(Redirect.INHERIT);
+	    	p = pb.start();
+	    	
+	    	
+		} catch (IOException e) {
 	        e.printStackTrace();
 	    }
 	    if (p != null) {
@@ -59,30 +66,33 @@ public class ClassificationThread extends Thread{
 	            e.printStackTrace();
 	        }
 	    }
-	    
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-	
 	    String line = "";
-	    ArrayList<String> allOut = new ArrayList<>();
-	    try
-	    {
-	        while ((line = reader.readLine())!= null)
-	        {
-	            System.out.println(line);
-	            allOut.add(line);
-	        }
-	    } catch (IOException ex)
-	    {
-	        //allOut = "0";
-	        //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-	        //System.out.println("erro3");        }
-	        System.out.println("error");
+		try {
+			line = reader.readLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	   
+		int eat = line.indexOf("eat");
+		int noeat = line.indexOf("noeat");
+		
+	    if ( noeat > 0) {
+	    	return false;
 	    }
-
-	    
-		t.setIntent("pizza");
-		System.out.println("classified task : "+t.getIntent());
-		return true;
+	    System.out.println(line);
+	    float f = Float.parseFloat(line.substring(line.indexOf(", ")+2, line.indexOf("]]")));
+	    System.out.println(f);
+	    if (f > 0.70) {
+	    	t.setIntent("pizza");
+			
+	    	
+	    	System.out.println("classified task : "+t.getIntent());
+			p.destroy();
+			return true;
+	    }
+		return false;
 	}
 	
 }

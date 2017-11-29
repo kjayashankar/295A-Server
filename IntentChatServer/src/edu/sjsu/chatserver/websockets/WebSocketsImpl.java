@@ -21,6 +21,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import edu.sjsu.chatserver.data.Constants;
 import edu.sjsu.chatserver.data.Message;
 import edu.sjsu.chatserver.data.Task;
 import edu.sjsu.chatserver.utils.JSONUtils;
@@ -50,16 +51,14 @@ public class WebSocketsImpl {
 				String sess1 = t.getSock1();
 				String sess2 = t.getSock2();
 				String intent = t.getIntent();
-				String ms = sess1+"-"+sess2+";"+intent;
+				String ms = Constants.PROTOCOL_SUGGESTIONS+sess1+"-"+sess2+";"+intent;
 				try {
 					channel.basicPublish(EXCHANGE_NAME, "", null, ms.getBytes() );
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
-			
 		} ,queue); 
 		cThread.start();
 		
@@ -69,17 +68,12 @@ public class WebSocketsImpl {
 		try {
 			connection = factory.newConnection();
 			channel = connection.createChannel();
-
 			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
-			
 			try {
 				channel.basicPublish(EXCHANGE_NAME, "", null, "hi socket".getBytes());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			//System.out.println(" [x] Sent '" + message + "'");
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
@@ -120,7 +114,7 @@ public class WebSocketsImpl {
         
         MongoUtils.process(msg);
         try {
-			queue.put(new Task(msg.getSender(), msg.getTo(), msg.getDeepValue()));
+			queue.put(new Task(msg.getSender(), msg.getTo(), msg.value()));
 		} catch (InterruptedException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -142,16 +136,13 @@ public class WebSocketsImpl {
 	        try {
 	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
 	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "UNREAD");
+	        	message = Constants.PROTOCOL_NOTIFICATIONS + message;
 				channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println(" [x] Sent '" + message + "'");
         }
-        // run algorithm;
-        // store in data base;
-        // push it to other party
     }
  
     /**

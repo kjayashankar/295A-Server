@@ -17,14 +17,14 @@ import edu.sjsu.chatserver.threads.MQThread;
 
 public class Subscribe {
 
-	private static final String FILE_NAME = "C:\\Users\\HEMA\\git\\295A-Server\\Python\\data\\corpus1";
+	private static final String FILE_NAME = "C:\\Users\\jay\\git\\295A-Server\\Python\\data\\corpus1";
 	
 	public static void main(String[] args) {
 		
 		Lock mLock = new ReentrantLock();
 		
-		MQThread mqThread = new MQThread(mLock);
-		mqThread.run();
+		Thread mqThread = new Thread(new MQThread(mLock));
+		mqThread.start();
 		
 		String EXCHANGE_NAME = "EXCHANGE";
 	    ConnectionFactory factory = new ConnectionFactory();

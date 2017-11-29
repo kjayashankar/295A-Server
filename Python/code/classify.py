@@ -10,7 +10,7 @@ import sys
 
 inputString = str(sys.argv[1])
 
-weights_file = "/media/jay/Study/git/295A-Server/Python/code/weights.json"
+weights_file = "C:\\Users\\Jay\\git\\295A-Server\\Python\\code\\weights.json"
 
 with open(weights_file) as data_file: 
     weights = json.load(data_file) 
@@ -18,9 +18,6 @@ with open(weights_file) as data_file:
     weights_1 = np.asarray(weights['weights1'])
     words = np.asarray(weights['words'])
     classes = np.asarray(weights['classes'])
-
-print (len(classes), "classes", classes)
-print (len(words), "unique stemmed words", words)
 
 def sigmoid(x):
     output = 1/(1+np.exp(-x))
@@ -62,11 +59,10 @@ def predictusing_ann(sentence, show_details=False):
 def classify(sentence, show_details=False):
     results = predictusing_ann(sentence, show_details)
     ERROR_THRESHOLD = 0.2
-    print(results)
+    
     results = [[i,r] for i,r in enumerate(results) if r>ERROR_THRESHOLD ] 
     results.sort(key=lambda x: x[1], reverse=True) 
     return_results =[[classes[r[0]],r[1]] for r in results]
-    print ("%s \n classification: %s" % (sentence, return_results))
-    return return_results
+    print (return_results)
 
 classify(inputString)

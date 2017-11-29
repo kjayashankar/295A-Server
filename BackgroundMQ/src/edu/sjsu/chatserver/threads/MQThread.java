@@ -14,7 +14,7 @@ public class MQThread implements Runnable {
 	String pythonTrainFile = "C:\\Users\\Jay\\git\\295A-Server\\Python\\code\\full.py";
 	
 	public MQThread (Lock mLock){
-		
+		this.mLock = mLock;
 	}
 	@Override
 	public void run() {
