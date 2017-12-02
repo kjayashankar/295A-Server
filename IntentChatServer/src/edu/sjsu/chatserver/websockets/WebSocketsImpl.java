@@ -17,6 +17,8 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
+import org.json.JSONObject;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -70,7 +72,7 @@ public class WebSocketsImpl {
 			channel = connection.createChannel();
 			channel.exchangeDeclare(EXCHANGE_NAME, "fanout");
 			try {
-				channel.basicPublish(EXCHANGE_NAME, "", null, "hi socket".getBytes());
+				channel.basicPublish(EXCHANGE_NAME, "", null, "dummy".getBytes());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -94,6 +96,7 @@ public class WebSocketsImpl {
         String text = MongoUtils.getConversation(from,to);
         MongoUtils.readMessage(from, to);
         placeMessage(session, text);
+        System.out.println(text);
         // Adding session to session list
         nameSessionPair.putIfAbsent(from+"-"+to,session); 
         sessionNamePair.put(session, from+"-"+to);
@@ -110,39 +113,83 @@ public class WebSocketsImpl {
  
         System.out.println("Message from " + session.getId() + ": " + message);
  
-        Message msg = JSONUtils.parseMessage(message);
         
-        MongoUtils.process(msg);
-        try {
-			queue.put(new Task(msg.getSender(), msg.getTo(), msg.value()));
-		} catch (InterruptedException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-        Session send = nameSessionPair.get(msg.getTo()+"-"+msg.getSender());
-        if (send != null) {
-	        try {
-	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
-	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "READ");
+        Message msg = JSONUtils.parseMessage(message);
+        switch (msg.getMimeType()) {
+	        case TEXT: {
+	        	processTextMessage(msg, session);
+	        	break;
+	        }
+	        case PIC: {
+	        	processPictureMessage(msg,session);
+	        	break;
+	        }
+        }
+        	
+       
+    }
+    
+    private void processTextMessage(Message msg, Session session) {
+    	 MongoUtils.process(msg);
+         try {
+ 			queue.put(new Task(msg.getSender(), msg.getTo(), msg.value()));
+ 		} catch (InterruptedException e2) {
+ 			e2.printStackTrace();
+ 		}
+         Session send = nameSessionPair.get(msg.getTo()+"-"+msg.getSender());
+         if (send != null) {
+ 	        try {
+ 	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
+ 	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "READ");
 
-				send.getBasicRemote().sendText(msg.getDeepValue());
-				
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-        }
-        else {
-	        try {
-	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
-	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "UNREAD");
-	        	message = Constants.PROTOCOL_NOTIFICATIONS + message;
-				channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println(" [x] Sent '" + message + "'");
-        }
+ 				send.getBasicRemote().sendText(msg.getDeepValue());
+ 				
+ 			} catch (IOException e1) {
+ 				// TODO Auto-generated catch block
+ 				e1.printStackTrace();
+ 			}
+         }
+         else {
+ 	        try {
+ 	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
+ 	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "UNREAD");
+ 	        	String message = Constants.PROTOCOL_NOTIFICATIONS_TEXT + msg.getDeepValue();
+ 				channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());
+ 	 			System.out.println(" [x] Sent '" + message + "'");
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}
+         }
+    }
+    
+    private void processPictureMessage(Message msg, Session session) {
+    	 MongoUtils.process(msg);
+    	 
+         Session send = nameSessionPair.get(msg.getTo()+"-"+msg.getSender());
+         if (send != null) {
+ 	        try {
+ 	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
+ 	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "READ");
+ 	        	/*****/
+ 				send.getBasicRemote().sendText(msg.getDeepValue());
+ 			} catch (IOException e1) {
+ 				// TODO Auto-generated catch block
+ 				e1.printStackTrace();
+ 			}
+         }
+         else {
+ 	        try {
+ 	        	MongoUtils.arrangeFriendsList(msg.getSender(), msg.getTo(), "READ");
+ 	        	MongoUtils.arrangeFriendsList(msg.getTo(), msg.getSender(), "UNREAD");
+ 	        	String message = Constants.PROTOCOL_NOTIFICATIONS_IMAGE + msg.getDeepValue();
+ 	        	
+ 	        	/*****/
+ 				channel.basicPublish(EXCHANGE_NAME, "", null, message.getBytes());
+ 	 			System.out.println(" [x] Sent '" + message + "'");
+ 			} catch (IOException e) {
+ 				e.printStackTrace();
+ 			}
+         }
     }
  
     /**
@@ -152,9 +199,16 @@ public class WebSocketsImpl {
     public void onClose(Session session) {
  
         System.out.println("Session " + session.getId() + " has ended");
-        String str = sessionNamePair.get(session);
+        String name = sessionNamePair.get(session);
         sessionNamePair.remove(session);
-        nameSessionPair.remove(str);
+        if (name != null && name.length() > 0)
+        	nameSessionPair.remove(name);
+        try {
+			session.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public static Map<String, String> getQueryMap(String query) {

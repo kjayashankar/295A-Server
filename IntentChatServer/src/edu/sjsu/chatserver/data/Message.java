@@ -11,4 +11,6 @@ public interface Message {
 	public String getDate();
 	
 	public String getDeepValue();
+	
+	public MIME getMimeType();
 }

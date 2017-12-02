@@ -74,10 +74,15 @@ public class NotificationSocket {
 				        pushMessage(Constants.PROTOCOL_SUGGESTIONS+intent+";"+f1,f2Session);
 		    			
 		    			break;
-		    		case Constants.PROTOCOL_NOTIFICATIONS:
+		    		case Constants.PROTOCOL_NOTIFICATIONS_TEXT:
 		    			Message msg = JSONUtils.parseMessage(message.substring(1));
 		    			String to = msg.getTo();
-		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS+";"+to, sessions.get(to));
+		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS_TEXT+";"+to, sessions.get(to));
+		    			break;
+		    		case Constants.PROTOCOL_NOTIFICATIONS_IMAGE:
+		    			msg = JSONUtils.parseMessage(message.substring(1));
+		    			to = msg.getTo();
+		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS_IMAGE+";"+to, sessions.get(to));
 		    			break;
 		    	}
 		    	
@@ -140,6 +145,13 @@ public class NotificationSocket {
     
     	String name = sessionInverse.get(session);
     	sessionInverse.remove(session);
-    	sessions.remove(name);    	
+    	if (name != null && name.length() > 0)
+    		sessions.remove(name);
+    	try {
+			session.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }

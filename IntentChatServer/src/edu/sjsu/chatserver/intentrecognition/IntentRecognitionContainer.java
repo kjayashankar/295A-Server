@@ -115,6 +115,28 @@ public final class IntentRecognitionContainer {
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
 	}
 	
+	@GET
+	@Path("/getImage/{uuid}")
+	public Response getImage(@PathParam("uuid") String uuid) {
+		String image = MongoUtils.getImage(uuid);
+		if (image != null && image.length() != 0) {
+			return Response.status(SUCCESS_CODE).entity(image).build();
+		}
+		else {
+			return Response.status(SUCCESS_CODE).entity(FAILURE_MSG).build();
+		}
+		
+		
+	}
+	
+	@POST
+	@Path("/postImage")
+	public Response postImage(@FormParam("uuid") String uuid, @FormParam("image") String image){
+		MongoUtils.processImage(uuid, image);
+		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
+	}
+	
+	
 	@POST
 	@Path("/registerUser")
 	public Response registerUser(@FormParam("name") String name, @FormParam("email") String email, 

@@ -4,6 +4,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -20,6 +22,7 @@ public class MongoUtils {
 	private static String DB_NAME = "project";
 	private static String RECENT_FRIENDS = "RecentFriends";
 	private static String FRIENDS = "Friends";
+	private static String IMAGES = "Images";
 	
 	public static void process(Message msg) {
 		MongoClient mongoClient = null;
@@ -349,6 +352,46 @@ public class MongoUtils {
 			String pass = (String)document.get("password");
 		}
 		return false;
+	}
+
+	public static void processImage(String uuid, String data) {
+		// TODO Auto-generated method stub
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		DB database = mongoClient.getDB(DB_NAME);
+		DBCollection collection1 = database.getCollection(IMAGES);
+		BasicDBObject document1 = new BasicDBObject();
+		document1.put("uuid", uuid);
+		document1.put("data", data);
+		collection1.insert(document1);
+	}
+	
+	public static String getImage(String uuid) {
+		
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		DB database = mongoClient.getDB(DB_NAME);
+		DBCollection collection1 = database.getCollection(IMAGES);
+		if (collection1 != null) {
+			BasicDBObject document1 = new BasicDBObject();
+			document1.put("uuid", uuid);
+			DBObject imageObject = collection1.find(document1).next();
+			JSONObject returner = new JSONObject();
+			returner.put("uuid", uuid);
+			returner.put("image", imageObject.get("data"));
+			System.out.println(imageObject.toString());
+			System.out.println(returner.toString());
+			return returner.toString();
+		}
+		return "";
 	}
 	
 	

@@ -14,12 +14,15 @@ public class TextMessage implements Message {
 	
 	private String deepValue;
 	
-	public TextMessage(String sender, String to, String value, String date, String deepValue) {
+	private MIME mime;
+	
+	public TextMessage(String sender, String to, String value, String date, String deepValue, MIME mime) {
 		this.sender = sender;
 		this.to = to;
 		this.value = value;
 		this.date = date;
 		this.deepValue = deepValue;
+		this.mime = mime;
 	}
 	
 	@Override
@@ -52,6 +55,9 @@ public class TextMessage implements Message {
 		return deepValue;
 	}
 	
-	
+	@Override
+	public MIME getMimeType() {
+		return mime;
+	}
 
 }

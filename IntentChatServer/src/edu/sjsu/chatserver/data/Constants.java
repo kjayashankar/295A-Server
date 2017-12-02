@@ -6,5 +6,8 @@ public class Constants {
 	
 	public static final String PROTOCOL_SUGGESTIONS = "2";
 	
-	public static final String PROTOCOL_NOTIFICATIONS = "3";
+	public static final String PROTOCOL_NOTIFICATIONS_TEXT = "3";
+
+	public static final String PROTOCOL_NOTIFICATIONS_IMAGE = "4";
+
 }

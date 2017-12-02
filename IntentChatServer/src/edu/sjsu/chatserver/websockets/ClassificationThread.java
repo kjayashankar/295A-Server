@@ -85,7 +85,7 @@ public class ClassificationThread extends Thread{
 	    float f = Float.parseFloat(line.substring(line.indexOf(", ")+2, line.indexOf("]]")));
 	    System.out.println(f);
 	    if (f > 0.70) {
-	    	t.setIntent("pizza");
+	    	t.setIntent("eat");
 			
 	    	
 	    	System.out.println("classified task : "+t.getIntent());
