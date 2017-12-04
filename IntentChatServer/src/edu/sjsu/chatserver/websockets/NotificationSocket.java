@@ -77,12 +77,14 @@ public class NotificationSocket {
 		    		case Constants.PROTOCOL_NOTIFICATIONS_TEXT:
 		    			Message msg = JSONUtils.parseMessage(message.substring(1));
 		    			String to = msg.getTo();
-		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS_TEXT+";"+to, sessions.get(to));
+		    			String from = msg.getSender();
+		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS_TEXT+";"+from, sessions.get(to));
 		    			break;
 		    		case Constants.PROTOCOL_NOTIFICATIONS_IMAGE:
 		    			msg = JSONUtils.parseMessage(message.substring(1));
 		    			to = msg.getTo();
-		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS_IMAGE+";"+to, sessions.get(to));
+		    			from = msg.getSender();
+		    			pushMessage(Constants.PROTOCOL_NOTIFICATIONS_IMAGE+";"+from, sessions.get(to));
 		    			break;
 		    	}
 		    	

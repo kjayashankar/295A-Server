@@ -79,8 +79,9 @@ public class MongoUtils {
 		BasicDBObject document = new BasicDBObject();
 		document.put("name", friend);
 		collection.remove(document);
-		
+		String picURL = getPicture(friend);
 		document.append("value", protocol);
+		document.append("picURL", picURL);
 		collection.insert(document);
 	}
 	
@@ -212,17 +213,43 @@ public class MongoUtils {
 		}
 		DB database = mongoClient.getDB(DB_NAME);
 		DBCollection collection = database.getCollection("ALLUSERS");
-		DBCursor cursor = collection.find();
+		BasicDBObject finder = new BasicDBObject("name",username);
+		DBCursor cursor = collection.find(finder);
+		
 		if (cursor.hasNext()){
 			DBObject obj = cursor.next();
 			sb.append(","+obj.toString());
 		}
+		System.out.println(sb.toString());
 		return "["+sb.toString().substring(1)+"]";
 	}
 
+	private static String getPicture(String user) {
+		String sb = "";
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		DB database = mongoClient.getDB(DB_NAME);
+		DBCollection collection = database.getCollection("ALLUSERS");
+		BasicDBObject finder = new BasicDBObject("name",user);
+		DBCursor cursor = collection.find(finder);
+		
+		if (cursor.hasNext()){
+			DBObject obj = cursor.next();
+			sb = (String)obj.get("picURL");
+		}
+		return sb;
+	}
+	
 	public static boolean sendFriendRequest(String username, String friendName) {
 		// TODO Auto-generated method stub
 		if(checkAllConnections(username,friendName)){
+			String myPicURL = getPicture(username);
+			String friendPicURL = getPicture(friendName);
+			
 			MongoClient mongoClient = null;
 			try {
 				mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
@@ -234,12 +261,14 @@ public class MongoUtils {
 			DBCollection collection1 = database.getCollection(username+FRIENDS);
 			BasicDBObject document1 = new BasicDBObject();
 			document1.put("name", friendName);
+			document1.put("picURL", friendPicURL);
 			document1.put("type", "CONFIRMATION");
 			collection1.insert(document1);
 			
 			DBCollection collection2 = database.getCollection(friendName+FRIENDS);
 			BasicDBObject document2 = new BasicDBObject();
 			document2.put("name", username);
+			document2.put("picURL", myPicURL);
 			document2.put("type", "REQUEST");
 			collection2.insert(document2);
 			
@@ -282,16 +311,17 @@ public class MongoUtils {
 		DBCollection collection1 = database.getCollection(username+FRIENDS);
 		BasicDBObject document1 = new BasicDBObject();
 		document1.put("name", friendName);
-		collection1.remove(document1);
-		document1.put("type", "FRIEND");
-		collection1.insert(document1);
+		DBObject obj1 = collection1.findAndRemove(document1);
+		obj1.put("type", "FRIEND");
+		collection1.insert(obj1);
+		
 		
 		DBCollection collection2 = database.getCollection(friendName+FRIENDS);
 		BasicDBObject document2 = new BasicDBObject();
 		document2.put("name", username);
-		collection2.remove(document2);
-		document2.put("type", "FRIEND");
-		collection2.insert(document2);
+		DBObject obj2 = collection1.findAndRemove(document2);
+		obj2.put("type", "FRIEND");
+		collection2.insert(obj2);
 	}
 
 	public static void deleteRequest(String username, String friendName) {

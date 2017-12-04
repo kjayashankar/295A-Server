@@ -74,16 +74,17 @@ public final class IntentRecognitionContainer {
 	@GET
 	@Path("/accept/{username}/{friendName}")
 	public Response acceptFriends(@PathParam("username") String username, @PathParam("friendName") String friendName){
-	
+		username = username.replaceAll("\\+", " ");
+		friendName = friendName.replaceAll("\\+", " ");
 		MongoUtils.acceptFriendRequest(username,friendName);
 		return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
-		
 	}
 	
 	@GET
 	@Path("/sendRequest/{username}/{friendName}")
 	public Response sendFriendRequest(@PathParam("username") String username, @PathParam("friendName") String friendName) {
-		
+		username = username.replaceAll("\\+", " ");
+		friendName = friendName.replaceAll("\\+", " ");
 		if (MongoUtils.sendFriendRequest(username,friendName))
 			return Response.status(SUCCESS_CODE).entity(SUCCESS_MSG).build();
 		else
